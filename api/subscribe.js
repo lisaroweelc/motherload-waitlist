@@ -8,12 +8,12 @@ export default async function handler(req, res) {
   if (!email) return res.status(400).json({ error: "Email required" });
 
   const response = await fetch(
-    `https://api.beehiiv.com/v2/publications/YOUR_PUB_ID/subscriptions`,
+    `https://api.beehiiv.com/v2/publications/BEEHIIV_PUB_ID/subscriptions`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer YOUR_API_KEY"
+        "Authorization": "Bearer BEEHIIV_API_KEY"
       },
       body: JSON.stringify({
         email,
