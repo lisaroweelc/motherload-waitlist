@@ -75,12 +75,27 @@ function WaitlistForm() {
   const [val, setVal]   = useState("");
   const [done, setDone] = useState(false);
 
-  const submit = (e) => {
+const submit = async (e) => {
     e.preventDefault();
     if (!val.includes("@")) return;
+    try {
+      await fetch(
+        `https://api.beehiiv.com/v2/publications/pub_7197ae1b-60cb-488a-b959-f606a285945e/subscriptions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer sf9muelz5nd1SO96TYmT9J7LP2W9Il1OqNlD06WFygRlD3iTniMNnuOhbQfvnZjd"
+          },
+          body: JSON.stringify({
+            email: val,
+            reactivate_existing: false,
+            send_welcome_email: true
+          })
+        }
+      );
+    } catch(e) { console.log(e); }
     setDone(true);
-    // 👉 TO CONNECT YOUR EMAIL LIST:
-    // POST { email: val } to your Beehiiv or ConvertKit endpoint here
   };
 
   if (done) return (
