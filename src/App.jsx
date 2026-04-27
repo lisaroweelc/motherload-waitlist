@@ -79,21 +79,11 @@ const submit = async (e) => {
     e.preventDefault();
     if (!val.includes("@")) return;
     try {
-      await fetch(
-        `https://api.beehiiv.com/v2/publications/pub_7197ae1b-60cb-488a-b959-f606a285945e/subscriptions`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer sf9muelz5nd1SO96TYmT9J7LP2W9Il1OqNlD06WFygRlD3iTniMNnuOhbQfvnZjd"
-          },
-          body: JSON.stringify({
-            email: val,
-            reactivate_existing: false,
-            send_welcome_email: true
-          })
-        }
-      );
+      await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: val })
+      });
     } catch(e) { console.log(e); }
     setDone(true);
   };
