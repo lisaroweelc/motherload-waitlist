@@ -14,6 +14,7 @@ const STYLES = `
   @keyframes float    { 0%,100% { transform:translateY(0) rotate(-1.5deg); } 50% { transform:translateY(-10px) rotate(-1.5deg); } }
   @keyframes pulse    { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(0.75); } }
   @keyframes shimmer  { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
+  @keyframes agentPop { 0% { opacity:0; transform:scale(0.85) translateY(10px); } 100% { opacity:1; transform:scale(1) translateY(0); } }
 
   .anim-1 { animation: fadeUp 0.75s ease both; }
   .anim-2 { animation: fadeUp 0.75s ease 0.12s both; }
@@ -37,6 +38,9 @@ const STYLES = `
   .card { transition:transform 0.22s ease,box-shadow 0.22s ease; }
   .card:hover { transform:translateY(-5px); box-shadow:0 16px 48px rgba(0,0,0,0.09); }
 
+  .agent-card { transition:transform 0.22s ease,box-shadow 0.22s ease,border-color 0.22s ease; cursor:default; }
+  .agent-card:hover { transform:translateY(-4px); box-shadow:0 12px 36px rgba(0,0,0,0.10); border-color:rgba(125,158,140,0.4) !important; }
+
   .btn { transition:transform 0.15s ease,box-shadow 0.15s ease; cursor:pointer; border:none; font-family:'DM Sans',sans-serif; font-weight:600; }
   .btn:hover  { transform:translateY(-2px); box-shadow:0 8px 28px rgba(196,120,90,0.38); }
   .btn:active { transform:translateY(0); }
@@ -50,6 +54,7 @@ const STYLES = `
     .hero-flex  { flex-direction:column !important; }
     .hide-sm    { display:none !important; }
     .form-row   { flex-direction:column !important; }
+    .agents-grid { grid-template-columns: 1fr 1fr !important; }
   }
 `;
 
@@ -57,25 +62,34 @@ const ROW1 = ["permission slips","dentist appointments","birthday RSVPs","what's
 const ROW2 = ["spirit week outfits","library books","piano recitals","back to school shopping","birthday party gifts","summer camp deadlines","volunteer sign-ups","sick day emails","early release days","allergy forms","lunch box notes","reading logs","science fair projects","snow day childcare","RSVP deadlines","coat weather"];
 
 const FEATURES = [
-  { emoji:"🍳", title:"Meal Planning & Grocery",  bg:"#FFF5F0", desc:"Weekly meals drafted for you. Grocery list price-compared across stores. Frozen chicken thawed before you remember." },
-  { emoji:"📚", title:"School Intelligence",       bg:"#F0F5F2", desc:"Every newsletter, ParentSquare email, and permission slip — parsed automatically. Action items extracted." },
-  { emoji:"📷", title:"Scan Anything",             bg:"#FDFBF0", desc:"Point your camera at a paper schedule, party invite, or flyer. Dates and action items flow in automatically." },
-  { emoji:"🎃", title:"Holiday Magic",             bg:"#FFF5F0", desc:"Countdowns, age-appropriate crafts, prep reminders, and a traditions tracker that makes every holiday feel intentional." },
-  { emoji:"🎂", title:"Birthday & Social",         bg:"#F0F5F2", desc:"RSVP tracking, gift suggestions that remember what you already gave, and reminders so nothing falls through." },
-  { emoji:"✨", title:"Real Savings, Tracked",     bg:"#FDFBF0", desc:"Every dollar saved on groceries, clothing, and travel is logged and celebrated. Families save an average of $1,200/year." },
+  { emoji:"🍳", title:"Meal Planning & Grocery",  bg:"#FFF5F0", desc:"Weekly meals drafted around your schedule and what's on sale at your store. Grocery list built automatically. Frozen chicken thawed before you remember." },
+  { emoji:"📚", title:"School Intelligence",       bg:"#F0F5F2", desc:"Every newsletter, ParentSquare email, and permission slip parsed automatically. Action items extracted. Deadlines never missed." },
+  { emoji:"🤖", title:"Agents That Coordinate",   bg:"#F2F5FF", desc:"Six AI agents work together behind the scenes. The Kitchen Agent checks your calendar before planning meals. The Schedule Agent catches conflicts before they happen. They talk to each other so you don't have to." },
+  { emoji:"🎃", title:"Holiday Magic",             bg:"#FFF5F0", desc:"Countdowns, age-appropriate crafts, prep reminders, and a traditions tracker that makes every holiday feel intentional — not like another thing to manage." },
+  { emoji:"🎂", title:"Birthday & Social",         bg:"#F0F5F2", desc:"RSVP tracking, gift suggestions that remember what you already gave, and reminders so nothing slips through." },
+  { emoji:"📷", title:"Scan Anything",             bg:"#FDFBF0", desc:"Point your camera at a paper schedule, party invite, or school flyer. Dates and action items flow into the right place automatically." },
+];
+
+const AGENTS = [
+  { emoji:"🍳", name:"Kitchen Agent",   color:"#C4785A", desc:"Plans meals, builds grocery lists, checks what's on sale, sets freezer reminders." },
+  { emoji:"📅", name:"Schedule Agent",  color:"#7D9E8C", desc:"Syncs your calendar, tracks activities, flags conflicts, sends pickup reminders." },
+  { emoji:"📚", name:"School Agent",    color:"#9B7BB5", desc:"Parses school emails, extracts deadlines, drafts replies, tracks permission slips." },
+  { emoji:"👗", name:"Wardrobe Agent",  color:"#C4785A", desc:"Tracks clothing sizes, monitors sales at your favorite stores, plans seasonal needs." },
+  { emoji:"✈️", name:"Travel Agent",    color:"#7D9E8C", desc:"Finds open windows in your calendar, plans trips, monitors deals for your destinations." },
+  { emoji:"🎉", name:"Holiday Agent",   color:"#C9A84C", desc:"Manages holiday countdowns, craft ideas, prep reminders, and your family traditions." },
 ];
 
 const STEPS = [
   { n:"01", c:"#7D9E8C", title:"Tell it about your family",  desc:"Add your kids' ages, schools, activities, and clothing sizes. Connect Google Calendar and Gmail. About 10 minutes." },
-  { n:"02", c:"#C4785A", title:"Agents start working",       desc:"School emails get parsed. Grocery lists get drafted. Appointment reminders get set. The app learns your family's rhythm." },
-  { n:"03", c:"#C9A84C", title:"You approve, it does",       desc:"Everything is a draft first. Review meals, approve the grocery list, confirm the calendar event. You're always in control." },
+  { n:"02", c:"#C4785A", title:"Agents start working",       desc:"School emails get parsed. Grocery lists get drafted around this week's sales. Appointment reminders get set. Agents share context so every output is smarter." },
+  { n:"03", c:"#C9A84C", title:"You approve, it does",       desc:"Everything is a draft first. Review meals, approve the grocery list, confirm the calendar event. You're always in control — the agents just do the legwork." },
 ];
 
 function WaitlistForm() {
   const [val, setVal]   = useState("");
   const [done, setDone] = useState(false);
 
-const submit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     if (!val.includes("@")) return;
     try {
@@ -84,7 +98,7 @@ const submit = async (e) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: val })
       });
-    } catch(e) { console.log(e); }
+    } catch(err) { console.log(err); }
     setDone(true);
   };
 
@@ -110,7 +124,7 @@ const submit = async (e) => {
         </button>
       </div>
       <p style={{ marginTop:12, fontSize:13, color:"#BBA898", fontStyle:"italic" }}>
-        2,847 moms already on the list · No spam, ever · Free to join
+        No spam, ever · Free to join · Be first to launch
       </p>
     </form>
   );
@@ -123,7 +137,7 @@ export default function App() {
 
       {/* ── NAV ─────────────────────────────────────────────── */}
       <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, height:66, background:"rgba(250,248,245,0.92)", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 28px" }}>
-        <span style={{ fontFamily:"'Fraunces',serif", fontWeight:700, fontSize:20, letterSpacing:"-0.5px", color:"#2D2D2D" }}>The MotherLoad</span>
+        <span className="f" style={{ fontSize:19, fontWeight:600, letterSpacing:"-0.3px", color:"#2D2D2D" }}>The MotherLoad</span>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div className="hide-sm" style={{ display:"flex", alignItems:"center", gap:6 }}>
             <div className="pulse-dot" style={{ width:7, height:7, borderRadius:"50%", background:"#7D9E8C" }} />
@@ -147,7 +161,7 @@ export default function App() {
             <div style={{ maxWidth:620, flex:1 }}>
               <div className="anim-1" style={{ marginBottom:28 }}>
                 <span style={{ background:"rgba(125,158,140,0.13)", color:"#4F7A68", border:"1px solid rgba(125,158,140,0.28)", borderRadius:100, padding:"5px 16px", fontSize:13, fontWeight:500, letterSpacing:"0.3px", fontFamily:"'DM Sans',sans-serif" }}>
-                  Coming Soon · AI Family Assistant
+                  Coming Soon · Agentic AI Family Assistant
                 </span>
               </div>
 
@@ -158,7 +172,7 @@ export default function App() {
               </div>
 
               <p className="anim-3" style={{ fontSize:"clamp(16px,2vw,19px)", lineHeight:1.68, color:"#6A625A", maxWidth:520, marginBottom:36, fontFamily:"'DM Sans',sans-serif" }}>
-                The MotherLoad is an AI-powered family assistant that carries the mental load — meals, school, schedules, birthdays, holidays, health reminders, and everything in between. So you can breathe.
+                The MotherLoad runs a team of AI agents in the background — each one specialized, all of them coordinating — so your week is planned, your groceries are priced, your school emails are parsed, and your family calendar is managed. Without you lifting a finger.
               </p>
 
               <div className="anim-4">
@@ -253,15 +267,64 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ────────────────────────────────────── */}
+      {/* ── AGENT TEAM ──────────────────────────────────────── */}
       <section style={{ background:"#FAF8F5", padding:"clamp(64px,8vw,108px) 28px", borderTop:"1px solid rgba(0,0,0,0.05)" }}>
+        <div style={{ maxWidth:960, margin:"0 auto" }}>
+          <div style={{ textAlign:"center", marginBottom:56 }}>
+            <span style={{ background:"rgba(125,158,140,0.13)", color:"#4F7A68", border:"1px solid rgba(125,158,140,0.28)", borderRadius:100, padding:"5px 16px", fontSize:13, fontWeight:500, letterSpacing:"0.3px", fontFamily:"'DM Sans',sans-serif", display:"inline-block", marginBottom:20 }}>
+              Meet the team
+            </span>
+            <h2 className="f" style={{ fontSize:"clamp(28px,5vw,52px)", fontWeight:700, letterSpacing:"-1.2px", color:"#2D2D2D", marginBottom:16 }}>
+              Six agents. One mission.
+            </h2>
+            <p style={{ fontSize:17, color:"#7A7470", maxWidth:520, margin:"0 auto", lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>
+              Each agent is a specialist. Together they coordinate in real time — sharing context, catching conflicts, and handling the details before you even notice them.
+            </p>
+          </div>
+
+          {/* Agent coordination diagram */}
+          <div style={{ background:"white", borderRadius:28, padding:"40px 36px", marginBottom:32, border:"1px solid rgba(0,0,0,0.05)", boxShadow:"0 8px 40px rgba(0,0,0,0.06)" }}>
+            <div style={{ textAlign:"center", marginBottom:28 }}>
+              <div style={{ display:"inline-flex", alignItems:"center", gap:10, background:"#242E27", borderRadius:100, padding:"10px 24px" }}>
+                <span style={{ fontSize:16 }}>🧠</span>
+                <span className="f" style={{ color:"white", fontSize:15, fontWeight:600 }}>Orchestrator</span>
+                <span style={{ fontSize:12, color:"rgba(255,255,255,0.45)", fontFamily:"'DM Sans',sans-serif" }}>coordinates everything</span>
+              </div>
+            </div>
+            <div style={{ display:"flex", justifyContent:"center", marginBottom:8 }}>
+              <div style={{ width:1, height:24, background:"#E0D8D0" }} />
+            </div>
+            <div className="agents-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12 }}>
+              {AGENTS.map((a,i) => (
+                <div key={i} className="agent-card" style={{ background:"#FAF8F5", borderRadius:16, padding:"18px 20px", border:"1.5px solid rgba(0,0,0,0.06)", position:"relative" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
+                    <div style={{ width:34, height:34, borderRadius:"50%", background:a.color + "22", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, flexShrink:0 }}>
+                      {a.emoji}
+                    </div>
+                    <span className="f" style={{ fontSize:14, fontWeight:700, color:"#2D2D2D" }}>{a.name}</span>
+                  </div>
+                  <p style={{ fontSize:12.5, color:"#7A7470", lineHeight:1.55, fontFamily:"'DM Sans',sans-serif" }}>{a.desc}</p>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop:24, padding:"16px 20px", background:"rgba(125,158,140,0.08)", borderRadius:12, border:"1px solid rgba(125,158,140,0.15)" }}>
+              <p style={{ fontSize:13, color:"#4F7A68", lineHeight:1.6, fontFamily:"'DM Sans',sans-serif", textAlign:"center" }}>
+                <strong>Example:</strong> The Kitchen Agent checks your calendar before planning meals. If Tuesday has gymnastics at 4pm and a school event at 7pm, it plans a 15-minute dinner — automatically. No input needed from you.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS ────────────────────────────────────── */}
+      <section style={{ background:"white", padding:"clamp(64px,8vw,108px) 28px", borderTop:"1px solid rgba(0,0,0,0.05)" }}>
         <div style={{ maxWidth:720, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:52 }}>
             <h2 className="f" style={{ fontSize:"clamp(28px,5vw,48px)", fontWeight:700, letterSpacing:"-1px", color:"#2D2D2D", marginBottom:14 }}>
               Set it up once. It works forever.
             </h2>
             <p style={{ fontSize:16, color:"#7A7470", lineHeight:1.65, fontFamily:"'DM Sans',sans-serif" }}>
-              Connect your Google Calendar and Gmail, add your family — then let the agents do their thing.
+              Connect your Google Calendar and Gmail, tell it about your family — then let the agents handle it.
             </p>
           </div>
           {STEPS.map((s,i) => (
@@ -288,7 +351,7 @@ export default function App() {
               It pays for itself.<br /><span className="shimmer">Then some.</span>
             </h2>
             <p style={{ fontSize:16, color:"rgba(255,255,255,0.55)", lineHeight:1.65, maxWidth:440, margin:"0 auto", fontFamily:"'DM Sans',sans-serif" }}>
-              Every dollar saved on groceries, clothing, and travel is tracked and celebrated.
+              Every dollar saved on groceries, clothing, and travel is tracked and celebrated. The app monitors sales at your favorite stores and builds your week around what's cheapest — automatically.
             </p>
           </div>
           <div style={{ background:"rgba(255,255,255,0.055)", borderRadius:22, border:"1px solid rgba(255,255,255,0.09)", padding:30, maxWidth:520, margin:"0 auto" }}>
@@ -330,6 +393,33 @@ export default function App() {
         </div>
       </section>
 
+      {/* ── FOUNDER STORY ───────────────────────────────────── */}
+      <section style={{ background:"#FAF8F5", padding:"clamp(64px,8vw,100px) 28px", borderTop:"1px solid rgba(0,0,0,0.05)" }}>
+        <div style={{ maxWidth:680, margin:"0 auto" }}>
+          <div style={{ background:"white", borderRadius:28, padding:"clamp(32px,5vw,52px)", boxShadow:"0 8px 40px rgba(0,0,0,0.06)", border:"1px solid rgba(0,0,0,0.04)", position:"relative" }}>
+            {/* Quote mark */}
+            <div className="f" style={{ fontSize:120, lineHeight:0.7, color:"#F0EBE4", position:"absolute", top:32, left:36, userSelect:"none" }}>"</div>
+            <div style={{ position:"relative", zIndex:1 }}>
+              <p style={{ fontSize:"clamp(16px,2vw,19px)", lineHeight:1.75, color:"#3D3530", fontFamily:"'DM Sans',sans-serif", marginBottom:28 }}>
+                I'm Lisa — a mom of three kids. For a long time I thought staying on top of everything <em>was</em> the job. The permission slips, the grocery lists, the dentist appointments, the dinner planning — all of it living in my head, all the time.
+              </p>
+              <p style={{ fontSize:"clamp(16px,2vw,19px)", lineHeight:1.75, color:"#3D3530", fontFamily:"'DM Sans',sans-serif", marginBottom:28 }}>
+                Then I realized I was so busy managing our life that I was missing it. I built The MotherLoad to carry the load so I could carry the memories instead.
+              </p>
+              <div style={{ display:"flex", alignItems:"center", gap:16, paddingTop:20, borderTop:"1px solid #F0EBE4" }}>
+                <div style={{ width:48, height:48, borderRadius:"50%", background:"linear-gradient(135deg,#7D9E8C,#C4785A)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                  <span className="f" style={{ color:"white", fontSize:20, fontWeight:700 }}>L</span>
+                </div>
+                <div>
+                  <p className="f" style={{ fontSize:16, fontWeight:700, color:"#2D2D2D" }}>Lisa</p>
+                  <p style={{ fontSize:13, color:"#9A8E86", fontFamily:"'DM Sans',sans-serif" }}>Founder, The MotherLoad · Mom of 3</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── FINAL CTA ───────────────────────────────────────── */}
       <section id="waitlist" style={{ position:"relative", background:"#FAF8F5", padding:"clamp(80px,10vw,120px) 28px", overflow:"hidden", borderTop:"1px solid rgba(0,0,0,0.05)" }}>
         <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:640, height:640, borderRadius:"50%", background:"radial-gradient(circle,rgba(125,158,140,0.09) 0%,transparent 62%)", pointerEvents:"none" }} />
@@ -352,9 +442,11 @@ export default function App() {
       {/* ── FOOTER ──────────────────────────────────────────── */}
       <footer style={{ background:"#242E27", padding:"40px 28px", textAlign:"center" }}>
         <div style={{ display:"flex", justifyContent:"center", marginBottom:16 }}>
-          <span style={{ fontFamily:"'Fraunces',serif", fontWeight:700, fontSize:18, color:"rgba(255,255,255,0.85)", letterSpacing:"-0.3px" }}>The MotherLoad</span>
+          <span className="f" style={{ fontSize:18, color:"rgba(255,255,255,0.85)", fontWeight:600, letterSpacing:"-0.3px" }}>The MotherLoad</span>
         </div>
-        <p style={{ fontSize:13, color:"rgba(255,255,255,0.3)", fontFamily:"'DM Sans',sans-serif" }}>© 2026 · joinmotherload.com · Coming Soon</p>
+        <p style={{ fontSize:13, color:"rgba(255,255,255,0.3)", fontFamily:"'DM Sans',sans-serif" }}>
+          We carry the load. You carry the love. · © 2026 · joinmotherload.com
+        </p>
       </footer>
     </>
   );
