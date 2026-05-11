@@ -137,7 +137,7 @@ export default function App() {
 
       {/* ── NAV ─────────────────────────────────────────────── */}
       <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, height:66, background:"rgba(250,248,245,0.92)", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 28px" }}>
-        <span className="f" style={{ fontSize:19, fontWeight:600, letterSpacing:"-0.3px", color:"#2D2D2D" }}>The MotherLoad</span>
+        <img src="/logo.svg" alt="The MotherLoad" style={{ height:44, width:"auto", display:"block" }} />
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div className="hide-sm" style={{ display:"flex", alignItems:"center", gap:6 }}>
             <div className="pulse-dot" style={{ width:7, height:7, borderRadius:"50%", background:"#7D9E8C" }} />
@@ -442,7 +442,7 @@ export default function App() {
       {/* ── FOOTER ──────────────────────────────────────────── */}
       <footer style={{ background:"#242E27", padding:"40px 28px", textAlign:"center" }}>
         <div style={{ display:"flex", justifyContent:"center", marginBottom:16 }}>
-          <span className="f" style={{ fontSize:18, color:"rgba(255,255,255,0.85)", fontWeight:600, letterSpacing:"-0.3px" }}>The MotherLoad</span>
+          <img src="/logo.svg" alt="The MotherLoad" style={{ height:36, width:"auto", display:"block", filter:"brightness(0) invert(1)" }} />
         </div>
         <p style={{ fontSize:13, color:"rgba(255,255,255,0.3)", fontFamily:"'DM Sans',sans-serif" }}>
           We carry the load. You carry the love. · © 2026 · joinmotherload.com
