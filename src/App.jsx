@@ -137,7 +137,10 @@ export default function App() {
 
       {/* ── NAV ─────────────────────────────────────────────── */}
       <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, height:66, background:"rgba(250,248,245,0.92)", borderBottom:"1px solid rgba(0,0,0,0.06)", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 28px" }}>
-        <img src="/logo.svg" alt="The MotherLoad" style={{ height:44, width:"auto", display:"block" }} />
+        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+  <img src="/logo.svg" alt="The MotherLoad" style={{ height:42, width:"auto", display:"block" }} />
+  <span style={{ fontFamily:"'Fraunces',serif", fontWeight:700, fontSize:18, color:"#C4785A", letterSpacing:"-0.3px" }}>The MotherLoad</span>
+</div>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div className="hide-sm" style={{ display:"flex", alignItems:"center", gap:6 }}>
             <div className="pulse-dot" style={{ width:7, height:7, borderRadius:"50%", background:"#7D9E8C" }} />
@@ -188,6 +191,10 @@ export default function App() {
                   <span style={{ fontSize:11, color:"rgba(255,255,255,0.35)", marginLeft:10, fontFamily:"'DM Sans',sans-serif" }}>joinmotherload.com</span>
                 </div>
                 <div style={{ padding:20 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:16, paddingBottom:12, borderBottom:"1px solid #F2EDE7" }}>
+    <img src="/logo.svg" alt="" style={{ height:28, width:"auto" }} />
+    <span style={{ fontFamily:"'Fraunces',serif", fontWeight:700, fontSize:13, color:"#C4785A" }}>The MotherLoad</span>
+  </div>
                   <p style={{ fontSize:11, color:"#AAA", textTransform:"uppercase", letterSpacing:"0.8px", marginBottom:4, fontFamily:"'DM Sans',sans-serif" }}>Good morning ✨</p>
                   <p className="f" style={{ fontSize:20, fontWeight:700, color:"#2D2D2D", marginBottom:18 }}>Tuesday, May 6</p>
                   {[
